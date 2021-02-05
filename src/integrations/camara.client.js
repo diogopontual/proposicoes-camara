@@ -23,7 +23,13 @@ async function askForPropositions (begin, end, theme, handler) {
       if (handler) {
         for (const obj of data.dados) {
           const details = (await askForURL(obj.uri)).dados
-          details.authors = (await askForURL(details.uriAutores)).dados
+          const authors = (await askForURL(details.uriAutores)).dados
+          details.authors = []
+          for (const author of authors) {
+            details.authors.push((await askForURL(author.uri)).dados)
+          }
+          details.procedures = (await askForURL(`${obj.uri}/tramitacoes`)).dados
+          details.polls = (await askForURL(`${obj.uri}/votacoes`)).dados
           handler(details)
         }
       }

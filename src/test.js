@@ -6,7 +6,7 @@ const logger = require('log4js').getLogger()
 ;(async () => {
   logger.debug('begining')
   await CamaraClient.askForPropositions(null, null, null, (obj) => {
-    console.log(obj)
+    // console.log(obj.authors)
   })
   logger.debug('end')
 })()
