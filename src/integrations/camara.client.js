@@ -19,18 +19,11 @@ async function askForPropositions (begin, end, theme, handler) {
   let total = 0
   try {
     while (received >= size) {
+      logger.info(`Loading page ${page}`)
       const data = await fetch(`${process.env.CAMARA_API_BASE_URL}/proposicoes?dataInicio=${format(begin, 'yyyy-MM-dd')}&dataFim=${format(end, 'yyyy-MM-dd')}&codTema=${theme}&pagina=${page}&itens=${size}&ordem=ASC&ordenarPor=id`).then(r => r.json())
       if (handler) {
         for (const obj of data.dados) {
-          const details = (await askForURL(obj.uri)).dados
-          const authors = (await askForURL(details.uriAutores)).dados
-          details.authors = []
-          for (const author of authors) {
-            details.authors.push((await askForURL(author.uri)).dados)
-          }
-          details.procedures = (await askForURL(`${obj.uri}/tramitacoes`)).dados
-          details.polls = (await askForURL(`${obj.uri}/votacoes`)).dados
-          handler(details)
+          await handler(obj)
         }
       }
       received = data.dados.length
@@ -43,11 +36,22 @@ async function askForPropositions (begin, end, theme, handler) {
   }
 }
 
+async function fetchPropositionDetails (uri) {
+  const details = (await askForURL(uri)).dados
+  const authors = (await askForURL(details.uriAutores)).dados
+  details.authors = []
+  for (const author of authors) {
+    details.authors.push((await askForURL(author.uri)).dados)
+  }
+  details.procedures = (await askForURL(`${uri}/tramitacoes`)).dados
+  return details
+}
+
 async function askForURL (url) {
   let retval = null
   try {
     retval = await fetch(`${url}`).then(r => r.json())
-    logger.info(`${url} fetched`)
+    logger.debug(`${url} fetched`)
   } catch (error) {
     console.log(error)
   }
@@ -55,5 +59,6 @@ async function askForURL (url) {
 }
 
 module.exports = {
-  askForPropositions
+  askForPropositions,
+  fetchPropositionDetails
 }

@@ -12,6 +12,8 @@
     "date-fns": "^2.16.1",
     "dotenv": "^8.2.0",
     "log4js": "^6.3.0",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "pg": "^8.5.1",
+    "twitter-lite": "^0.14.0"
   }
 }

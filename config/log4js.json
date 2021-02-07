@@ -1,4 +1,4 @@
 {
   "appenders": { "console": { "type": "console" } },
-  "categories": { "default": { "appenders": [ "console" ], "level": "debug" } }
+  "categories": { "default": { "appenders": [ "console" ], "level": "info" } }
 }
