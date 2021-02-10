@@ -4,6 +4,9 @@ const ProcedureDAO = require('../procedure/procedure.dao')
 const logger = require('log4js').getLogger('proposition.service')
 const CamaraClient = require('../../integrations/camara.client')
 
+module.exports.getMostRelevant = async () => {
+  return await PropositionDAO.find(null, [['status_date_time', 'desc']], 10)
+}
 module.exports.save = async (camaraProposition) => {
   let proposition = await PropositionDAO.load(camaraProposition.id)
   if (proposition) return

@@ -1,5 +1,21 @@
 const db = require('../../database')
+const squel = require('squel')
 
+module.exports.find = async (where, sort, limit) => {
+  let query = squel.select().from('propositions')
+  if (where) {
+    query = query.where(where || squel.expr())
+  }
+  if (sort) {
+    for (const field of sort) {
+      query = query.order(field[0], field[1].toLowerCase() === 'asc')
+    }
+  }
+  if (limit) {
+    query = query.limit(limit)
+  }
+  return (await db.query(query.toString())).rows
+}
 module.exports.insert = async (proposition) => {
   const query = {
     text: 'INSERT INTO public.propositions (id, "type", "number", "year", synthesis, presentation_date, description, id_parent, url_full_content, "lead", count_retweets, count_likes, proposition_text, justification, status_date_time, status_description) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)',

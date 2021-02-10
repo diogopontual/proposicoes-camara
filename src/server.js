@@ -1,0 +1,12 @@
+require('dotenv').config()
+const log4js = require('log4js')
+log4js.configure('./config/log4js.json')
+const express = require('express')
+const app = express()
+const cors = require('cors')
+const publicRoutes = require('./public-routes')
+app.use(cors())
+app.set('json spaces', 2)
+app.use('/api/v1', publicRoutes)
+// Start the Express server
+app.listen(3000, () => console.log('Server running on port 3000!'))
