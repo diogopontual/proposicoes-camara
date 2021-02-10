@@ -3,7 +3,7 @@ const PropositionService = require('./proposition.service')
 
 module.exports.getMostRelevant = async (req, res) => {
   if (req.query.filterType === 'MOST_RELEVANT') {
-    res.json(await PropositionService.getMostRelevant(req.query.limit || process.env.DEFAULT_LIMIT))
+    res.json(await PropositionService.getMostRelevant(req.query.limit || process.env.DEFAULT_LIMIT, req.query.tag ? [].concat(req.query.tag) : null))
   } else {
     res.status(NOT_IMPLEMENTED).end()
   }

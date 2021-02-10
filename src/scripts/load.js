@@ -1,8 +1,8 @@
 require('dotenv').config()
 const log4js = require('log4js')
-const { PropositionService } = require('./domain/proposition')
+const { PropositionService } = require('../src/domain/proposition')
 log4js.configure('./config/log4js.json')
-const CamaraClient = require('./integrations/camara.client')
+const CamaraClient = require('../src/integrations/camara.client')
 const logger = require('log4js').getLogger()
 ;(async () => {
   logger.debug('begining')

@@ -3,13 +3,26 @@ const AuthorDAO = require('../author/author.dao')
 const ProcedureDAO = require('../procedure/procedure.dao')
 const logger = require('log4js').getLogger('proposition.service')
 const CamaraClient = require('../../integrations/camara.client')
+const squel = require('squel')
 
-module.exports.getMostRelevant = async (limit) => {
-  return await PropositionDAO.find(null, [['status_date_time', 'desc']], limit)
+module.exports.getMostRelevant = async (limit, tags) => {
+  let where = null
+  if (tags) {
+    where = squel.expr().and(`id_tag in (${tags.toString()})`)
+  }
+  return await PropositionDAO.find(where, [['status_date_time', 'desc']], limit)
+}
+
+module.exports.all = async () => {
+  return await PropositionDAO.find()
 }
 
 module.exports.get = async (id) => {
   return await PropositionDAO.load(id)
+}
+
+module.exports.update = async (fields, id) => {
+  return await PropositionDAO.update(fields, id)
 }
 
 module.exports.save = async (camaraProposition) => {
@@ -36,7 +49,8 @@ module.exports.save = async (camaraProposition) => {
       countRetweets: 0,
       countLikes: 0,
       statusDateTime: camaraProposition.statusProposicao.dataHora,
-      statusDescription: camaraProposition.statusProposicao.descricaoSituacao
+      statusDescription: camaraProposition.statusProposicao.descricaoSituacao,
+      keywords: camaraProposition.keywords
     }
     if (camaraProposition.uriPropPrincipal) {
       const arr = camaraProposition.uriPropPrincipal.split('/')
@@ -104,5 +118,11 @@ module.exports.save = async (camaraProposition) => {
     }
   } catch (error) {
     logger.error(`Error on proposition ${camaraProposition.id}`, error)
+  }
+}
+
+module.exports.addTags = async (id, tags, manual) => {
+  for (const tag of tags) {
+    await PropositionDAO.insertTag(id, tag, manual)
   }
 }

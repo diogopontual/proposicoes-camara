@@ -60,5 +60,6 @@ async function askForURL (url) {
 
 module.exports = {
   askForPropositions,
-  fetchPropositionDetails
+  fetchPropositionDetails,
+  askForURL
 }
